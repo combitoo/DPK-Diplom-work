@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %} 👥 Пользователи {% endblock %}
+
+{% block content %}
+<div class="mt-10 dark:text-gray-400">
+    <div class="pt-4 mb-8 max-w-6xl m-auto">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white mb-8">Пользователи</h1>
+        <div class="block gap-6">
+            {% for user_item in users %}
+            <a href="/user/profile/{{ user_item.username }}">
+                <div class="w-full p-4 bg-white dark:bg-gray-800 h-full flex rounded mb-4 shadow-lg">
+                    {% if user_item.avatar_link == '' %}
+                        <img 
+                            src="{{ url_for('static', path='/imgs/user.svg') }}" 
+                            alt="Аватар" id="image" 
+                            class="sm:w-full object-cover flex items-center justify-center text-center border-2 border-gray-300 bg-gray-800 rounded-full  w-16 h-16 lg:w-36 lg:h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                        >
+                    {% endif %}
+                    {% if user_item.avatar_link != '' %}
+                        <img 
+                            src="{{ url_for('static', path=user_item.avatar_link) }}" 
+                            alt="Аватар" 
+                            id="image" 
+                            class="object-cover flex items-center justify-center text-center border-2 border-gray-300 bg-gray-800 rounded-full min-w-[64px] w-16 h-16 lg:w-36 lg:min-w-[144px] lg:h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                        >
+                    {% endif %}
+                    <div class="ml-4">
+                        <div class="my-auto h-max">
+                            <h1 class="text-clip break-words headingPreview text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">{{ user_item.username }}</h1>
+                            <p class="w-full dark:text-gray-400">{{ user_item.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="pagination mt-4">
+            {{ pagination_html | safe }}
+        </div>
+    </div>
+</div>
+{% endblock %}

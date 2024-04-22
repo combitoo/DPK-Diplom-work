@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %} 
+    {% if post == "404" %}
+        ❌ Статьи нет
+    {% else %}
+        {{ post.title|truncate(32) }} 
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="mt-10">
+    <section class="bg-white dark:bg-gray-900">
+        {% if post == "404" %}
+            <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+                <div class="mx-auto max-w-screen-sm text-center">
+                    <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-gray-400">Упс!</h1>
+                    <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">❌ Такой статьи нет!</p>
+                    <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">Извините, мы не можем найти эту статью. На главной странице вы сможете найти много интересного. </p>
+                    <a href="/" class="inline-flex text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-primary-900 my-4">Вернуться на главную 🏠</a>
+                </div>   
+            </div>
+        {% else %}
+            <div class="mx-auto max-w-6xl">
+                <div class="previewAuthor block md:flex items-center">
+                    <div class="rounded_avatar h-36 min-w-fit w-full sm:w-36 flex justify-center">
+                        <a href="/user/profile/{{ post.created_by.username }}">
+                            {% if post.created_by.avatar_link == '' %}
+                                <img 
+                                    src="{{ url_for('static', path='/imgs/user.svg') }}" 
+                                    alt="Аватар" id="image" 
+                                    class="sm:w-full object-cover flex items-center justify-center text-center border-2 border-gray-300 bg-gray-800 rounded-full w-36 h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                            {% endif %}
+                            {% if post.created_by.avatar_link != '' %}
+                                <img 
+                                    src="{{ url_for('static', path=post.created_by.avatar_link) }}" 
+                                    alt="Аватар" 
+                                    id="image" 
+                                    class="object-cover flex items-center justify-center text-center border-2 border-gray-300 bg-gray-800 rounded-full w-36 h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="authorAbout md:ml-4 mt-4 md:mt-0 items-center w-full">
+                        <h1 class="text-clip break-words headingPreview text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">{{ post.title }}</h1>
+                        {% if user is not defined %}
+                            {% set user = None %}
+                        {% endif %}
+                        {% if user.id == post.created_by.id %}
+                            <a href="/user/profile">
+                                <p class="w-full dark:text-gray-400">{{ post.created_by.username }}</p>
+                            </a>
+                        {% else %}
+                        <a href="/user/profile/{{ post.created_by.username }}">
+                            <p class="w-full dark:text-gray-400">{{ post.created_by.username }}</p>
+                        </a>
+                        {% endif %}
+                        <p class="w-full dark:text-gray-400">Время на чтение: {{ post.time_amount }}</p>
+                        <p class="w-full text-gray-400 dark:text-gray-700">Создано: {{ post.created_at.strftime('%d-%m-%Y') }}, изменено: {{ post.edited_at.strftime('%d-%m-%Y') }}</p>
+                    </div>
+                </div>
+                {% if post.preview_link != "" %}
+                    <img alt="blog photo" src="{{ url_for('static', path=post.preview_link) }}" class="rounded-tr-md rounded-tl-md aspect-video object-cover w-full mt-4"/>
+                {% else %}
+                    <img alt="blog photo" src="{{ url_for('static', path='/imgs/post.svg') }}" class="rounded-tr-md rounded-tl-md w-full h-96 mt-4 bg-gray-600"/>
+                {% endif %}
+                
+                <div class="format format-sm sm:format-base lg:format-lg format-blue dark:format-invert mb select-none w-full rounded-br-md rounded-bl-md output bg-gray-50 text-gray-900 dark:text-white block p-2.5 dark:bg-gray-700">{{ post.text | safe }}</div>
+
+                {# Секция комментариев #}
+                <section class="bg-white dark:bg-gray-900 my-4 antialiased mt-8">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="flex justify-between items-center mb-6">
+                          <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Комментарии ({{ comments|length }})</h2>
+                        </div>
+                        {% if user is not defined %}
+                            {% set user = None %}
+                        {% endif %}
+
+                        {% if user != None %}
+                        <form class="mb-6" method="POST" action="/post/create_comment">
+                            <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                                <input name="post_id" value="{{post.id}}" class="hidden" required readonly>
+
+                                <label for="comment" class="sr-only">Ваш комментарий</label>
+                                <textarea 
+                                    id="comment" rows="6"
+                                    name="comment"
+                                    class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                                    placeholder="Напишите комментарий..." required></textarea>
+                                
+                            </div>
+                            <button type="submit"
+                                class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                                Отправить
+                            </button>
+                        </form>
+                        {% else %}
+                            <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                                <label for="comment" class="sr-only">Ваш комментарий</label>
+                                <div 
+                                    disabled
+                                    id="comment" rows="1"
+                                    name="comment-text"
+                                    class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                                >Чтобы писать комментарии, нужно войти в аккаунт</div>
+                            </div>
+                            <a href="/auth/login">
+                                <button type="submit"
+                                class="inline-flex self-end items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                                    Войти в аккаунт
+                                </button>
+                            </a>
+                        {% endif %}
+                        <div class="mt-2 border-l pl-4 border-gray-200 dark:border-gray-600">
+                            {% for comment in comments %}
+                            <article class="py-3 text-base bg-white rounded-lg dark:bg-gray-900">
+                                <a href="/user/profile/{{comment.created_by.username}}">
+                                    <footer class="flex justify-between items-center mb-2">
+                                        <div class="flex items-center">
+                                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold"><img
+                                                class="mr-2 w-10 h-10 rounded-full object-cover"
+                                                src="{{ url_for('static', path=comment.created_by.avatar_link) }}"
+                                                alt="{{ comment.created_by.username }}"
+                                            > {{ comment.created_by.username }} </p>
+                                            <p class="text-sm text-gray-800 dark:text-gray-400">
+                                                <time 
+                                                    pubdate 
+                                                    datetime="{{ comment.created_at.strftime('%d-%m-%Y') }}"
+                                                    title="{{ comment.created_at.strftime('%d-%m-%Y') }}"
+                                                > {{ comment.created_at.strftime('%d-%m-%Y') }} </time>
+                                            </p>
+                                            {% if comment.created_by.id == user.id %}
+                                            <form action="/post/delete_comment/" method="post" class="ml-3 w-6 h-6 bg-primary-700 dark:bg-gray-700 rounded flex">
+                                                <input type="hidden" name="comment_id" value="{{comment.id}}">
+                                                <button type="submit" class="m-auto">
+                                                    {% include 'icons/icon_delete.html' %}
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </footer>
+                                </a>
+                                <p class="text-gray-500 dark:text-gray-400">{{comment.text}}</p>
+                            </article>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

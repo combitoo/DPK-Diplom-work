@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %} ⚙️ Настройки {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="mt-10">
+    <section class="bg-white dark:bg-gray-900">
+        <div class="py-8 px-4 mx-auto max-w-6xl lg:py-16">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Оформление</h2>
+            <form action="/user/settings_descs" method="POST" enctype="multipart/form-data">
+                <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                    <div class="sm:col-span-2">
+                        <div class="rounded_avatar flex items-center justify-center w-full relative">
+                            {% if user.avatar_link == '' %}
+                                <img 
+                                    src="{{ url_for('static', path='/imgs/user.svg') }}" 
+                                    alt="Аватар" id="image" 
+                                    class="object-cover flex items-center justify-center text-center border-2 border-gray-300 border-dashed bg-gray-800 rounded-full w-36 h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                            {% endif %}
+                            {% if user.avatar_link != '' %}
+                                <img 
+                                    src="{{ url_for('static', path=user.avatar_link) }}" 
+                                    alt="Аватар" 
+                                    id="image" 
+                                    class="object-cover flex items-center justify-center text-center border-2 border-gray-300 border-dashed bg-gray-800 rounded-full w-36 h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <div class="flex items-center justify-center w-full">
+                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                    </svg>
+                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400 text-center"><span class="font-semibold">Нажмите чтобы загрузить картинку</span></p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG</p>
+                                </div>
+                                <input id="dropzone-file" name="avatar_image" type="file" class="hidden" accept="image/png, image/jpeg"/>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Описание профиля</label>
+                        <textarea id="description" name="description" rows="8" value="" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Укажите описание профиля">{{ user.description }}</textarea>
+                    </div>
+                </div>
+                <div class="text-danger text-gray-500 dark:text-gray-300 font-weight-bold error_block">
+                    {% for error in errors_descs %}
+                      <li>{{error}}</li>
+                    {% endfor %}
+                </div>
+                <button type="submit" class=" px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full sm:w-auto">
+                    Сохранить
+                </button>
+            </form>
+            <br>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Настройки пользователя</h2>
+            <span class="text-gray-300 font-light mb-10 dark:text-white">Используйте только латинские символы и цифры</span>
+            <br><br>
+            <form action="/user/settings_creds" method="POST" enctype="multipart/form-data">
+                <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                    <div class="sm:col-span-2">
+                        <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Логин</label>
+                        <input type="text" name="username" id="username" value="{{ user.username }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Укажите новый логин">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Новый пароль</label>
+                        <input type="password" name="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="••••••••">
+                    </div>
+                </div>
+                <div class="text-danger text-gray-500 dark:text-gray-300 font-weight-bold">
+                    {% for error in errors_creds %}
+                      <li>{{error}}</li>
+                    {% endfor %}
+                </div>
+                <button type="submit" class=" px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full sm:w-auto">
+                    Сохранить
+                </button>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let dropzoneInput = document.getElementById('dropzone-file');
+
+    // Добавляем обработчик события click
+    dropzoneInput.addEventListener('click', function () {
+        this.value = null;
+    });
+
+    dropzoneInput.onchange = function () {
+        var fileName = document.getElementById("dropzone-file").value;
+        var idxDot = fileName.lastIndexOf(".") + 1;
+        var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        let input = this;
+        if ((input.files && input.files[0]) && (extFile=="jpg" || extFile=="jpeg" || extFile=="png")) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                let img = new Image();
+                img.src = e.target.result;
+                img.onload = function () {
+                    let modal = document.createElement('div');
+                    modal.innerHTML = `
+                    <div class="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50" id="imageModal">
+                        <div class="bg-white dark:bg-gray-700 p-4 rounded">
+                            <div class="flex justify-between items-center mb-4">
+                                <h5 class="text-lg font-semibold dark:text-white text-dark">Обрезать изображение</h5>
+                                <button id="closeModalBtn" class="text-gray-600 hover:text-gray-800 focus:outline-none close">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="mb-4 w-full max-h-100">
+                                <img id="image-cropper" class="" src="${e.target.result}" alt="Обрезаемое изображение" style="max-height:80svh;">
+                            </div>
+                            <div class="flex justify-end">
+                                <button id="cropImageBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">Обрезать и сохранить</button>
+                            </div>
+                        </div>
+                    </div>`;
+                    document.body.appendChild(modal);
+    
+                    let image = document.getElementById('image-cropper');
+                    let cropper = new Cropper(image, {
+                        aspectRatio: 1/1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        crop: function (e) {  }
+                    });
+    
+                    document.getElementById('cropImageBtn').addEventListener('click', function () {
+                        let canvas = cropper.getCroppedCanvas();
+                        let croppedSrc = canvas.toDataURL();
+                        
+                        document.getElementById('image').src = croppedSrc;
+                        cropper.getCroppedCanvas().toBlob(function (blob) {
+                            let formData = new FormData();
+                            formData.append('dropzone-file', blob);
+                            document.getElementById('dropzone-file').src = URL.createObjectURL(blob);
+                        });
+                        document.getElementById('imageModal').classList.toggle('hidden')
+                        document.body.removeChild(modal);
+                    });
+                
+                    document.getElementById('closeModalBtn').addEventListener('click', function () {
+                        document.getElementById('imageModal').classList.toggle('hidden')
+                        document.body.removeChild(modal);
+                    });
+                };
+            };
+            reader.readAsDataURL(input.files[0]);
+            return
+        }
+        document.querySelector(".error_block").innerHTML = "<li>Только .jpg/jpeg и png файлы разрешены!</li>" 
+    };
+
+    function getDate() {
+        let date = new Date();
+        return date.getTime();
+    }
+</script>
+{% endblock %}

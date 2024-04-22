@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %} 👤 Профиль {% endblock %}
+
+{% block content %}
+<div class="mt-10">
+    <section class="bg-white dark:bg-gray-900 mx-auto max-w-6xl">
+        <div class="block md:flex items-center justify-between">
+            <div class="block md:flex items-center w-full">
+                <div class="rounded_avatar  h-36 min-w-fit w-full sm:w-36 flex justify-center">
+                    {% if user.avatar_link == '' %}
+                        <img 
+                            src="{{ url_for('static', path='/imgs/user.svg') }}" 
+                            alt="Аватар" id="image" 
+                            class="sm:w-full object-cover flex items-center justify-center text-center border-2 border-gray-300 bg-gray-800 rounded-full w-36 h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                        >
+                    {% endif %}
+                    {% if user.avatar_link != '' %}
+                        <img 
+                            src="{{ url_for('static', path=user.avatar_link) }}" 
+                            alt="Аватар" 
+                            id="image" 
+                            class="object-cover flex items-center justify-center text-center border-2 border-gray-300 bg-gray-800 rounded-full w-36 h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                        >
+                    {% endif %}
+                </div>
+                <div class="text-sm max-w-prose mt-3 md:ml-3">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">{{ user.username }}</h1>
+                    <p class="dark:text-gray-400">{{ user.description }}</p>
+                </div>
+            </div>
+            <div class="flex items-center md:w-60 lg:w-72 xl:w-96 w-full sm:justify-end justify-normal box-border">
+                <a href="/post/create">
+                    <div class="px-3 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full sm:w-auto">Создать пост</div>
+                </a>
+                <a href="/user/settings">
+                    <div class="ml-3 w-10 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="flex-shrink-0 h-5 text-white transition duration-75 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white w-full items-center">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                          </svg>                          
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="mt-10">
+            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Ваши посты</h1>
+            <div class="grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 mt-5">
+                {% if posts == "404" %}
+                    <p class="dark:text-gray-400">Вы не создали ещё ни одного поста!</p>
+                {% else %}
+                    {% for post in posts %}
+                    <div class=" overflow-hidden rounded-lg shadow-lg w-full h-full">
+                        <div class="block w-full h-full">
+                            <a href="/post/read/?post_id={{ post.id }}" class="relative">
+                                {% if post.preview_link != "" %}
+                                    <img alt="blog photo" src="{{ url_for('static', path=post.preview_link) }}" class="object-cover w-full aspect-video"/>
+                                {% else %}
+                                    <img alt="blog photo" src="{{ url_for('static', path='/imgs/post.svg') }}" class="bg-gray-600 w-full aspect-video mx-auto"/>
+                                {% endif %}
+                                <form action="/post/delete/" method="post" class="absolute top-[5px] right-[5px] w-6 h-6 bg-primary-700 dark:bg-gray-700 rounded flex">
+                                    <input type="hidden" name="post_id" value="{{post.id}}">
+                                    <button type="submit" class="m-auto">
+                                            {% include 'icons/icon_delete.html' %}
+                                    </button>
+                                </form>
+                            </a>
+                            <div class="w-full p-4 bg-white dark:bg-gray-800 h-full">
+                                <p class="font-medium text-indigo-500 text-md">
+                                    Категория
+                                </p>
+                                <p class="mb-2 text-xl font-medium text-gray-800 dark:text-white">
+                                    {{ post.title | truncate(31) }}
+                                </p>
+                                <p class="font-light text-gray-400 dark:text-gray-300 text-md">
+                                    {{ post.text | striptags | truncate(64) }}
+                                    <a href="/post/read/?post_id={{ post.id }}">
+                                        <span class="text-indigo-500 font-bold">
+                                            Читать далее
+                                        </span>
+                                    </a>
+                                </p>
+                                <div class="flex items-center mt-4">
+                                    <img alt="profile" src="{{ url_for('static', path=user.avatar_link) }}" class="flex flex-col object-cover rounded-full h-10 w-10 "/>
+                                    <div class="flex flex-col justify-between ml-4 text-sm">
+                                        <p class="text-gray-800 dark:text-white">
+                                            {{ user.username }}
+                                        </p>
+                                        <p class="text-gray-400 dark:text-gray-300">
+                                            {{ post.created_at.strftime('%d-%m-%Y') }} - {{ post.time_to_read }} чтения
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

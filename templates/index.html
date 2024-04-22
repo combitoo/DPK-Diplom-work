@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %} 🏠 Главная страница {% endblock %}
+
+{% block content %}
+<div class="mt-10 dark:text-gray-400">
+    <div class="pt-4 mb-8 max-w-6xl m-auto">
+        <div class="block lg:flex gap-6">
+            <div class="block w-full lg:w-4/6">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Главная страница</h1>
+        
+                <div class="posts w-full">
+                    {% for post in posts %}
+                        <div class="overflow-hidden rounded-lg shadow-lg h-90 w-full mt-4">
+                            <div class="block w-full h-full">
+                                <a href="/post/read/?post_id={{ post.id }}">
+                                    {% if post.preview_link != "" %}
+                                        <img alt="blog photo" src="{{ url_for('static', path=post.preview_link) }}" class="object-cover aspect-video w-full"/>
+                                    {% else %}
+                                        <img alt="blog photo" src="{{ url_for('static', path='/imgs/post.svg') }}" class="w-full max-h-96 bg-gray-600 aspect-video mx-auto"/>
+                                    {% endif %}
+                                </a>
+                                <div class="w-full p-4 bg-white dark:bg-gray-800">
+                                    <p class="font-medium text-indigo-500 text-md">
+                                        Категория
+                                    </p>
+                                    <p class="mb-2 text-xl font-medium text-gray-800 dark:text-white">
+                                        {{ post.title | truncate(31) }}
+                                    </p>
+                                    <p class="font-light text-gray-400 dark:text-gray-300 text-md">
+                                        {{ post.text | striptags | replace('!', '! ') | truncate(256) }}
+                                        <a href="/post/read/?post_id={{ post.id }}">
+                                            <span class="text-indigo-500 font-bold">
+                                                Читать далее
+                                            </span>
+                                        </a>
+                                    </p>
+                                    <div class="flex items-center mt-4">
+                                        <a href="/user/profile/{{ post.created_by.username }}">
+                                            <img alt="profile" src="{{ url_for('static', path=post.created_by.avatar_link) }}" class="flex flex-col object-cover rounded-full h-10 w-10 "/>
+                                        </a>
+                                        <div class="flex flex-col justify-between ml-4 text-sm">
+                                            <a href="/user/profile/{{ post.created_by.username }}">
+                                                <p class="text-gray-800 dark:text-white">
+                                                    {{ post.created_by.username }}
+                                                </p>
+                                            </a>
+                                            <p class="text-gray-400 dark:text-gray-300">
+                                                {{ post.created_at.strftime('%d-%m-%Y') }} - {{ post.time_to_read }} чтения
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                </div>
+
+                <div class="pagination mt-4">
+                    {{ pagination_html | safe }}
+                </div>
+            </div>
+            <div class="block w-full lg:w-2/6">
+                <div class="mt-8 lg:mt-4 ">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Популярное</h1>
+    
+                    <div class="w-full p-4 bg-white dark:bg-gray-800 mt-4 rounded-lg shadow-lg ">
+                        Скоро тут появятся популярные посты!
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">К авторам</h1>
+    
+                    <div class="w-full p-4 bg-white dark:bg-gray-800 mt-4 rounded-lg shadow-lg ">
+                        <a href="/user">
+                            <div class="w-full px-3 py-2.5 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">Перейти</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+<hidden class="hidden -space-x-px text-base leading-tight rounded-s-lg rounded-e-lg sr-only h-10 items-center rtl:rotate-180 ms-0 z-10 text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white w-3 h-3"></hidden>
+{% endblock %}

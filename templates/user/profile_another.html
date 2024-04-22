@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %} 👤 {{ another_user.username }} {% endblock %}
+
+{% block content %}
+<div class="mt-10">
+    <section class="bg-white dark:bg-gray-900 mx-auto max-w-6xl">
+        <div class="block md:flex items-center justify-between">
+            <div class="block md:flex items-center w-full">
+                <div class="rounded_avatar  h-36 min-w-fit w-full sm:w-36 flex justify-center">
+                    {% if user is not defined %}
+                        {% set user = None %}
+                    {% endif %}
+                    {% if another_user.avatar_link == '' %}
+                        <img 
+                            src="{{ url_for('static', path='/imgs/user.svg') }}" 
+                            alt="Аватар" id="image" 
+                            class="sm:w-full object-cover flex items-center justify-center text-center border-2 border-gray-300 bg-gray-800 rounded-full w-36 h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                        >
+                    {% endif %}
+                    {% if another_user.avatar_link != '' %}
+                        <img 
+                            src="{{ url_for('static', path=another_user.avatar_link) }}" 
+                            alt="Аватар" 
+                            id="image" 
+                            class="object-cover flex items-center justify-center text-center border-2 border-gray-300 bg-gray-800 rounded-full w-36 h-36 dark:bg-bray-800 dark:bg-gray-700 dark:border-gray-600"
+                        >
+                    {% endif %}
+                </div>
+                <div class="text-sm max-w-prose mt-3 md:ml-3">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">{{ another_user.username }}</h1>
+                    <p class="dark:text-gray-400">{{ another_user.description }}</p>
+                </div>
+            </div>
+            <div class="flex items-center md:w-60 lg:w-72 xl:w-96 w-full sm:justify-end justify-normal box-border">
+                
+            </div>
+        </div>
+        <div class="mt-10">
+            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Посты пользователя</h1>
+            
+            {% if posts == "404" %}
+                <p class="dark:text-gray-400">Пользователь не создал ещё ни одного поста!</p>
+            {% else %}
+                <div class="grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 mt-5 ">
+                    {% for post in posts %}
+                    <div class=" overflow-hidden rounded-lg shadow-lg w-full h-full">
+                        <div class="block w-full h-full">
+                            <a href="/post/read/?post_id={{ post.id }}">
+                                {% if post.preview_link != "" %}
+                                    <img alt="blog photo" src="{{ url_for('static', path=post.preview_link) }}" class="object-cover w-full aspect-video"/>
+                                {% else %}
+                                    <img alt="blog photo" src="{{ url_for('static', path='/imgs/post.svg') }}" class="w-full max-h-40 bg-gray-600"/>
+                                {% endif %}
+                                
+                            </a>
+                            <div class="w-full p-4 bg-white dark:bg-gray-800 h-full">
+                                <p class="font-medium text-indigo-500 text-md">
+                                    Категория
+                                </p>
+                                <p class="mb-2 text-xl font-medium text-gray-800 dark:text-white">
+                                    {{ post.title | truncate(31) }}
+                                </p>
+                                <p class="font-light text-gray-400 dark:text-gray-300 text-md">
+                                    {{ post.text | striptags | truncate(64) }}
+                                    <a href="/post/read/?post_id={{ post.id }}">
+                                        <span class="text-indigo-500 font-bold">
+                                            Читать далее
+                                        </span>
+                                    </a>
+                                </p>
+                                <div class="flex items-center mt-4">
+                                    <img alt="profile" src="{{ url_for('static', path=another_user.avatar_link) }}" class="flex flex-col object-cover rounded-full h-10 w-10 "/>
+                                    <div class="flex flex-col justify-between ml-4 text-sm">
+                                        <p class="text-gray-800 dark:text-white">
+                                            {{ another_user.username }}
+                                        </p>
+                                        <p class="text-gray-400 dark:text-gray-300">
+                                            {{ post.created_at.strftime('%d-%m-%Y') }} - {{ post.time_to_read }} чтения
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

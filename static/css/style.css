@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer components {
+    .bg-primary-600 {
+        background-color: #2563eb !important;
+    }
+    .bg-primary-700 {
+        background-color: #1d4ed8 !important;
+    }
+}
+
+#text:has(font), div:has(font) {
+    padding-top: 24px !important;
+    padding-bottom: 10px !important;
+}
+
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    width: 100%;
+    height: 100svh;
+}
+
+#to-top-button {
+    -webkit-user-select: none;
+}
+
+* {
+    scroll-behavior: smooth;
+    transition: background 0.5s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#text hr {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+body::-webkit-scrollbar {
+    width: 7px;
+    scrollbar-width: thin;
+}
+body::-webkit-scrollbar-track {
+    background: rgb(31, 41, 55);
+    border: 1px solid rgb(55, 65, 81);
+}
+body::-webkit-scrollbar-thumb {
+    background-color: rgb(29, 78, 216);
+}
+
+#comment::-webkit-scrollbar {
+    width: 7px;
+    scrollbar-width: thin;
+    border-radius: 10px;
+}
+#comment::-webkit-scrollbar-track {
+    background: rgb(31, 41, 55);
+    border-radius: 10px;
+}
+#comment::-webkit-scrollbar-thumb {
+    background-color: rgb(29, 78, 216);
+    border-radius: 10px;
+}
+#comment::-webkit-resizer {
+    border: 1px solid rgb(29, 78, 216);
+    border-radius: 10px;
+}
+.output {
+    transition: 1s;
+}
+.button-wrapper {
+    position: relative;
+}
+.tooltip {
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    text-align: center;
+    transition: .4s;
+}
+.button-wrapper:hover .tooltip {
+    opacity: 1;
+    display: flex;
+    z-index: 999;
+    transition: .4s;
+}
