@@ -52,12 +52,12 @@
                         <textarea id="description" name="description" rows="8" value="" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Укажите описание профиля">{{ user.description }}</textarea>
                     </div>
                 </div>
-                <div class="text-danger text-gray-500 dark:text-gray-300 font-weight-bold error_block">
+                <div class="text-danger text-gray-500 dark:text-gray-300 font-weight-bold error_block errors">
                     {% for error in errors_descs %}
                       <li>{{error}}</li>
                     {% endfor %}
                 </div>
-                <button type="submit" class=" px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full sm:w-auto">
+                <button type="submit" class=" px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full sm:w-auto saveProfile">
                     Сохранить
                 </button>
             </form>
@@ -92,6 +92,33 @@
 
 {% block scripts %}
 <script>
+
+    let saveProfile = document.querySelector(".saveProfile").addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        formData = new FormData();
+        if (document.imageBlob) { 
+            formData.append("avatar_image", document.imageBlob, "avatar_image.png");
+        }
+        formData.append("description", document.querySelector('#description').value);
+
+        await fetch('/user/settings_descs', {
+            method: 'POST',
+            body: formData,
+        }).then((res) => {
+            if (res.ok) {
+                return document.location = "/user/profile";
+            }
+            return res.json()
+        }).then((data) => {
+            errors = "";
+            data.errors_descs.forEach((el) => {
+                errors += `<li>${el}</li>`
+            });
+            document.querySelector(".errors").innerHTML = errors;
+        })
+    })
+
     let dropzoneInput = document.getElementById('dropzone-file');
 
     // Добавляем обработчик события click
@@ -146,9 +173,7 @@
                         
                         document.getElementById('image').src = croppedSrc;
                         cropper.getCroppedCanvas().toBlob(function (blob) {
-                            let formData = new FormData();
-                            formData.append('dropzone-file', blob);
-                            document.getElementById('dropzone-file').src = URL.createObjectURL(blob);
+                            document.imageBlob = blob;
                         });
                         document.getElementById('imageModal').classList.toggle('hidden')
                         document.body.removeChild(modal);

@@ -23,7 +23,7 @@ async def main(request: Request, offset: int = 0, user=Depends(manager.optional)
     #     return RedirectResponse("/")
     
     pagination_html = await get_pagintaion_page(limit=LIMIT_POST, offset=offset, pages_amount=pages_amount)
-    posts = await Post.all().offset(offset * LIMIT_POST).limit(LIMIT_POST).order_by("-created_at").prefetch_related("created_by")
+    posts = await Post.all().offset(offset * LIMIT_POST).limit(LIMIT_POST).order_by("-created_at").prefetch_related("created_by", "categories")
 
     return templates.TemplateResponse("index.html", {
         "request": request,

@@ -43,7 +43,7 @@ async def user_settings(request: Request, user=Depends(manager)):
 
 @router_api.get('/profile', response_class=HTMLResponse)
 async def user_profile(request: Request, user=Depends(manager)):
-    posts = await Post.all().filter(created_by=user.id).order_by("-created_at")
+    posts = await Post.all().filter(created_by=user.id).prefetch_related('categories').order_by("-created_at")
 
     if len(posts) < 1:
         posts = "404"
@@ -65,7 +65,7 @@ async def user_profile(request: Request, username: str = "", user=Depends(manage
     if user is not None and another_user.id == user.id:
         return RedirectResponse("/user/profile")
     
-    posts = await Post.all().filter(created_by=another_user.id)
+    posts = await Post.all().filter(created_by=another_user.id).prefetch_related("created_by", "categories")
 
     if len(posts) < 1:
         posts = "404"

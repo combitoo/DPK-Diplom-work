@@ -141,13 +141,32 @@
                     </div>
                     <input type="text" class="myhd hidden" name="text" value="">
 
-                    <div class="text-danger text-gray-500 dark:text-gray-300 font-weight-bold">
+                    
+                    <div class="w-full mt-4">
+                        <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Категория</label>
+                        <div class="w-full" role="group" aria-label="Basic outlined example">
+                            <div class="grid sm:grid-cols-5 md:grid-cols-7 grid-cols-4 gap-1 text-white">
+                                {% set style_button_text_cat = "h-full block py-1 text-sm font-medium text-center text-white border border-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full" %}
+                                {% for category in categories %}
+                                <div class="button-wrapper w-full">
+                                    <button 
+                                        type="button" class="{{ style_button_text_cat }}"
+                                        onclick="addCategory({{ category.id }}, this)"
+                                    > {{ category.name }} </button>
+                                    <div class="tooltip"> {{ category.description }} </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="errors text-danger text-gray-500 dark:text-gray-300 font-weight-bold">
                         {% for error in errors_descs %}
                         <li>{{error}}</li>
                         {% endfor %}
                     </div>
 
-                    <button type="submit" class="self-end px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full sm:w-auto">
+                    <button type="submit" class="self-end px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full sm:w-auto createPost">
                         Опубликовать
                     </button>
                 </div>
@@ -187,6 +206,50 @@
 
 {% block scripts %}
 <script>
+    async function addCategory(id, item) {
+        if (!document.categories) {
+            document.categories = new Array();
+        }
+        item.classList.toggle('bg-primary-700');
+        item.classList.toggle('border');
+
+        if (item.classList.contains('border')) {
+            document.categories.splice(document.categories.indexOf(id), 1);
+        } 
+        if (item.classList.contains('bg-primary-700')) {
+            document.categories.push(id);
+        }
+    }
+
+    let createPost = document.querySelector(".createPost").addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        formData = new FormData();
+        if (document.imageBlob) { 
+            formData.append("preview_link", document.imageBlob, "preview_link.png");
+        }
+        formData.append("title", document.querySelector('#heading').value);
+        formData.append("text", document.querySelector(".myhd").value);
+        formData.append("categories", document.categories);
+
+        await fetch('/post/create', {
+            method: 'POST',
+            body: formData,
+        }).then((res) => {
+            if (res.ok) {
+                return document.location = "/user/profile";
+            }
+            return res.json()
+        }).then((data) => {
+            errors = "";
+            data.errors_descs.forEach((el) => {
+                errors += `<li>${el}</li>`
+            });
+            document.querySelector(".errors").innerHTML = errors;
+        })
+    })
+    
+
     let loading = `
     <div class="text-center p-10">
         <div role="status block">
@@ -260,26 +323,22 @@
                         aspectRatio: 16/9,
                         viewMode: 1,
                         autoCropArea: 1,
-                        crop: function (e) { console.log(e) }
+                        crop: function (e) { }
                     });
     
                     document.getElementById('cropImageBtn').addEventListener('click', function () {
                         let canvas = cropper.getCroppedCanvas();
                         let croppedSrc = canvas.toDataURL();
-                        
+                        cropper.getCroppedCanvas().toBlob(function (blob) {
+                            document.imageBlob = blob;
+                        });
                         document.getElementById('image').src = croppedSrc;
                         document.getElementById('image-preview').src = croppedSrc;
-                        cropper.getCroppedCanvas().toBlob(function (blob) {
-                            let formData = new FormData();
-                            formData.append('dropzone-file', blob);
-                            document.getElementById('dropzone-file').src = URL.createObjectURL(blob);
-                        });
                         document.getElementById('imageModal').classList.toggle('hidden')
                         document.body.removeChild(modal);
                     });
                 
                     document.getElementById('closeModalBtn').addEventListener('click', function () {
-                        console.log(1)
                         document.getElementById('imageModal').classList.toggle('hidden')
                         document.body.removeChild(modal);
                     });
@@ -288,8 +347,6 @@
             reader.readAsDataURL(input.files[0]);
         }
     };
-
-    
 
     function getDate() {
         let date = new Date();

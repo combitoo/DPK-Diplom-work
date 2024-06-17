@@ -7,7 +7,7 @@
     <div class="pt-4 mb-8 max-w-6xl m-auto">
         <div class="block lg:flex gap-6">
             <div class="block w-full lg:w-4/6">
-                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Главная страница</h1>
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white mb-8">Главная страница</h1>
         
                 <div class="posts w-full">
                     {% for post in posts %}
@@ -21,9 +21,15 @@
                                     {% endif %}
                                 </a>
                                 <div class="w-full p-4 bg-white dark:bg-gray-800">
-                                    <p class="font-medium text-indigo-500 text-md">
-                                        Категория
-                                    </p>
+                                    {% if post.categorise != None %}
+                                    <div class="flex gap-1">
+                                        {% for category in post.categories %}
+                                            <p class="font-medium text-primary-700 text-md border border-primary-700 flex p-1 rounded">
+                                                {{ category.name }}
+                                            </p>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                                     <p class="mb-2 text-xl font-medium text-gray-800 dark:text-white">
                                         {{ post.title | truncate(31) }}
                                     </p>

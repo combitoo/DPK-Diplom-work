@@ -66,10 +66,16 @@
                                 </form>
                             </a>
                             <div class="w-full p-4 bg-white dark:bg-gray-800 h-full">
-                                <p class="font-medium text-indigo-500 text-md">
-                                    Категория
-                                </p>
-                                <p class="mb-2 text-xl font-medium text-gray-800 dark:text-white">
+                                {% if post.categorise != None %}
+                                <div class="flex gap-1">
+                                    {% for category in post.categories %}
+                                        <p class="font-medium text-primary-700 text-md border border-primary-700 flex p-1 rounded">
+                                            {{ category.name }}
+                                        </p>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <p class="mb-2 text-xl mt-3 font-medium text-gray-800 dark:text-white">
                                     {{ post.title | truncate(31) }}
                                 </p>
                                 <p class="font-light text-gray-400 dark:text-gray-300 text-md">

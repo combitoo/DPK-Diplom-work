@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %} 🔥 {{ category.name }} {% endblock %}
+
+{% block content %}
+<div class="mt-10 dark:text-gray-400">
+    <div class="pt-4 mb-8 max-w-6xl m-auto">
+        <div class="block lg:flex gap-6">
+            <div class="block w-full">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white mb-8">{{ category.name }}</h1>
+        
+                <div class="w-full">
+                    <div class="grid sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-7 grid-cols-3 gap-1 text-white">
+                        {% set style_button_text_cat = "h-full block py-1 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full cursor-pointer" %}
+                        {% for category_all in categories %}
+                        <div class="button-wrapper w-full">
+                            <a href="/categories/{{category_all.id}}">
+                                <div class="{{ style_button_text_cat }}"> {{ category_all.name }} </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <p class="mt-4">{{ category.description }}</p>
+                    <p class="mt-4">
+                        <b>Постов: </b>{{ category.post_amount }}</p>
+
+                    <div class="grid grid-cols-1 gap-12 md:grid-cols-2 mt-5 w-full">
+                        {% if posts == "404" %}
+                            <p class="dark:text-gray-400">В данной категории ещё нет постов!</p>
+                        {% else %}
+                            {% for post in posts %}
+                            <div class=" overflow-hidden rounded-lg shadow-lg w-full h-full">
+                                <div class="block w-full h-full">
+                                    <a href="/post/read/?post_id={{ post.id }}" class="relative">
+                                        {% if post.preview_link != "" %}
+                                            <img alt="blog photo" src="{{ url_for('static', path=post.preview_link) }}" class="object-cover w-full aspect-video"/>
+                                        {% else %}
+                                            <img alt="blog photo" src="{{ url_for('static', path='/imgs/post.svg') }}" class="bg-gray-600 w-full aspect-video mx-auto"/>
+                                        {% endif %}
+                                    </a>
+                                    <div class="w-full p-4 bg-white dark:bg-gray-800 h-full">
+                                        {% if post.categorise != None %}
+                                        <div class="flex gap-1">
+                                            {% for category in post.categories %}
+                                                <p class="font-medium text-primary-700 text-md border border-primary-700 flex p-1 rounded">
+                                                    {{ category.name }}
+                                                </p>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <p class="mb-2 text-xl mt-3 font-medium text-gray-800 dark:text-white">
+                                            {{ post.title | truncate(31) }}
+                                        </p>
+                                        <p class="font-light text-gray-400 dark:text-gray-300 text-md">
+                                            {{ post.text | striptags | truncate(64) }}
+                                            <a href="/post/read/?post_id={{ post.id }}">
+                                                <span class="text-indigo-500 font-bold">
+                                                    Читать далее
+                                                </span>
+                                            </a>
+                                        </p>
+                                        <div class="flex items-center mt-4">
+                                            <img alt="profile" src="{{ url_for('static', path=post.created_by.avatar_link) }}" class="flex flex-col object-cover rounded-full h-10 w-10 "/>
+                                            <div class="flex flex-col justify-between ml-4 text-sm">
+                                                <p class="text-gray-800 dark:text-white">
+                                                    {{ post.created_by.username }}
+                                                </p>
+                                                <p class="text-gray-400 dark:text-gray-300">
+                                                    {{ post.created_at.strftime('%d-%m-%Y') }} - {{ post.time_to_read }} чтения
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

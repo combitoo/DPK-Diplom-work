@@ -56,6 +56,15 @@
                             <p class="w-full dark:text-gray-400">{{ post.created_by.username }}</p>
                         </a>
                         {% endif %}
+                        {% if post.categorise != None %}
+                        <div class="flex gap-1">
+                            {% for category in post.categories %}
+                                <p class="font-medium text-primary-700 text-md border border-primary-700 flex p-1 rounded">
+                                    {{ category.name }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                         <p class="w-full dark:text-gray-400">Время на чтение: {{ post.time_amount }}</p>
                         <p class="w-full text-gray-400 dark:text-gray-700">Создано: {{ post.created_at.strftime('%d-%m-%Y') }}, изменено: {{ post.edited_at.strftime('%d-%m-%Y') }}</p>
                     </div>

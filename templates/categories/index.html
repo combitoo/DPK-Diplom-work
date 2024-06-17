@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %} 🔥 Категории {% endblock %}
+
+{% block content %}
+<div class="mt-10 dark:text-gray-400">
+    <div class="pt-4 mb-8 max-w-6xl m-auto">
+        <div class="block lg:flex gap-6">
+            <div class="block w-full">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white mb-8">Категории</h1>
+        
+                <div class="w-full">
+                    <div class="grid sm:grid-cols-4 md:grid-cols-7 grid-cols-3 gap-1 text-white">
+                        {% set style_button_text_cat = "h-full block py-1 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full cursor-pointer" %}
+                        {% for category in categories %}
+                        <div class="button-wrapper w-full">
+                            <a href="/categories/{{category.id}}">
+                                <div class="{{ style_button_text_cat }}"> {{ category.name }} </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <p class="mt-4">Выберите категорию, чтобы посмотреть подробнее или проверить статьи</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

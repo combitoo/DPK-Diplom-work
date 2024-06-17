@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %} 🦅 Админ панель {% endblock %}
+
+{% block content %}
+<div class="mt-10 dark:text-gray-400">
+    <div class="pt-4 mb-8 max-w-6xl m-auto">
+        <div class="block lg:flex gap-6">
+            <div class="block w-full">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white mb-8">Админ панель</h1>
+        
+                <div class="w-full">
+                    <div class="relative overflow-x-auto sm:rounded-lg">
+                        <div id="accordion-collapse" data-accordion="collapse" class="border border-gray-200 dark:border-gray-700 rounded rounded-t-xl">
+                            <h2 id="accordion-collapse-heading-1">
+                              <button type="button" class="flex items-center justify-between w-full p-4 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+                                <span>Пользователи</span>
+                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                                </svg>
+                              </button>
+                            </h2>
+                            <div id="accordion-collapse-body-1" class="hidden" aria-labelledby="accordion-collapse-heading-1">
+                                <div class="border border-b-1 border-gray-200 dark:border-gray-700">
+                                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 dark:border dark:border-gray-800 rounded-t-xl">
+                                        <caption class="caption-top text mt-2 mb-2">
+                                            Таблица 1. Пользователи
+                                        </caption>
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Логин
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Роль
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Описание
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Постов
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Действие
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for user in users %}
+                                            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                                <form action="/admin/user/update/{{user.id}}" method="post">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    <div>
+                                                        <input value="{{user.username}}" type="text" name="login" id="login" placeholder="Логин" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                                    </div>
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <input value="{{user.role}}" type="text" name="role" id="role" placeholder="Роль" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <input value="{{user.description}}" type="text" name="description" id="description" placeholder="Описание" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <input value="{{user.post_amount}}" type="text" name="post_amount" id="post_amount" placeholder="Постов" disabled class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Сохранить</button>
+                                                    <a href="/admin/user/delete/{{user.id}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Удалить</a>
+                                                </td>
+                                                </form>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div> 
+                            </div>
+                            <h2 id="accordion-collapse-heading-2">
+                              <button type="button" class="flex items-center justify-between w-full p-4 font-medium rtl:text-right text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-2" aria-expanded="false" aria-controls="accordion-collapse-body-2">
+                                <span>Статьи</span>
+                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                                </svg>
+                              </button>
+                            </h2>
+                            <div id="accordion-collapse-body-2" class="hidden" aria-labelledby="accordion-collapse-heading-2">
+                                <div class="border border-b-1 border-gray-200 dark:border-gray-700">
+                                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 dark:border dark:border-gray-800 rounded-t-xl">
+                                        <caption class="caption-top text mt-2 mb-2">
+                                            Таблица 2. Статьи
+                                        </caption>
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Заголовок
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Текст
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Ссылка на картинку
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Автор
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Время на чтение
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Рейтинг
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Действие
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for post in posts %}
+                                            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                                <form action="/admin/post/update/{{post.id}}" method="post">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    <div>
+                                                        <input value="{{post.title}}" type="text" name="title" id="title" placeholder="Заголовок" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                                    </div>
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <input value="{{post.text.strip()}}" type="text" name="text" id="text" placeholder="Текст" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <a href="/static/{{post.preview_link}}" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly>{{post.preview_link}}</a>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <a href="/user/profile/{{post.created_by.username}}" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>{{post.created_by.username}}</a>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <div class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>{{post.time_to_read}}</div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <div class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>{{post.post_rating}}</div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Сохранить</button>
+                                                    <a href="/admin/post/delete/{{post.id}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Удалить</a>
+                                                </td>
+                                                </form>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div> 
+                            </div>
+                            <h2 id="accordion-collapse-heading-3">
+                              <button type="button" class="flex items-center justify-between w-full p-4 font-medium rtl:text-right text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-3" aria-expanded="false" aria-controls="accordion-collapse-body-3">
+                                <span>Комментарии</span>
+                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                                </svg>
+                              </button>
+                            </h2>
+                            <div id="accordion-collapse-body-3" class="hidden" aria-labelledby="accordion-collapse-heading-3">
+                                <div class="border border-b-1 border-gray-200 dark:border-gray-700">
+                                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 dark:border dark:border-gray-800 rounded-t-xl">
+                                        <caption class="caption-top text mt-2 mb-2">
+                                            Таблица 3. Комментарии
+                                        </caption>
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Текст
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Автор
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Ссылка на пост
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Действие
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for comment in comments %}
+                                            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                                <form action="/admin/comment/update/{{comment.id}}" method="post">
+                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    <div>
+                                                        <input value="{{comment.text}}" type="text" name="text" id="text" placeholder="Текст комментария" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                                    </div>
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <a href="/user/{{comment.created_by.username}}" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>{{comment.created_by.username}}</a>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div>
+                                                        <a href="/post/read/?post_id={{comment.post.id}}" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>/post/read/?post_id={{comment.post.id}}</a>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Сохранить</button>
+                                                    <a href="/admin/comment/delete/{{comment.id}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Удалить</a>
+                                                </td>
+                                                </form>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div> 
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

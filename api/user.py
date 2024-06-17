@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status, Form, File, UploadFile
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from fastapi_login.exceptions import InvalidCredentialsException 
@@ -72,7 +72,6 @@ async def user_settings(
 
 @router_api.post('/settings_descs')
 async def user_settings(
-    request: Request,
     description: str = Form(""),
     avatar_image: UploadFile = None,
     user = Depends(manager),
@@ -85,10 +84,10 @@ async def user_settings(
         errors.append("Описание профиля слишком длинное! Максимум 511 символов.")
     
     if errors != []:
-        return templates.TemplateResponse('user/settings.html', {
-            "request": request,
+        return JSONResponse(
+            status_code=400,
+            content={
             "errors_descs": errors,
-            "user": user,
         })
     
     my_user = await User.get(id=user.id)
