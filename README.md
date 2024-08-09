@@ -1,51 +1,25 @@
-# BUILD FRONTEND
-Команда для запуска билда CSS и кастомных стилей для FLOWBITE/TAILWIND
+# Сборка стилей Tailwind
+Команда для запуска билда CSS и кастомных стилей для Tailwind
 ```bash
-npx tailwindcss -i ./static/css/style.css -o ./static/css/dist/output.css --watch  # Указываем тейлвинду путь до CSS файла и куда его конфигурировать
+npx tailwindcss -i ./static/css/style.css -o ./static/css/dist/output.css --watch
 ```
 
-# BUILD BACKEND 
-Активируем окружение и запускаем сервак. Работает на 80 порту.
+# Запуск сервера 
+Активируем окружение и запускаем сервер. Работает на 80 порту.
 ```bash
-venv\Scripts\activate  # Активируем окружение Python
-python main.py  # Запускаем сервер
+venv\Scripts\activate
+python main.py
 ```
 
-# AERICH INIT & MARIADB
-Работает по ссылке `mysql://root@localhost:3306/blogo`\
-Данная утилита нужна для миграций в базу данных
+# AERICH инициализация & База данных
+Дефолтная ссылка для базы `mysql://root@localhost:3306/blogo`\
+Миграции:
 ```bash
 aerich init -h  # Инициализируем aerich
 aerich init -t main.TORTOISE_ORM  # Инициализируем конфигурационный файл
 aerich init-db  # Инициализируем базу
 aerich migrate --name init  # Делаем первую миграцию
-aerich upgrade  # Обновляемся до последней версии миграций
-```
-
-# Структура проекта
-```bash
-- api  # Отвечает за API сайта
-    - __init__  # Импорт всех модулей для более удобной работы
-    - modules
-- database  # Папка для указания моделей для базы
-    - models  # Описываем поля в базе
-- frontend_manager  # Папка отвечает за раздачу статики
-    - __init__  
-    - modules
-- migrations   # Папка отвечает за миграции для бд
-    - models
-- static  # Отвечает за удержание необходимой статики
-    - css  # Все стили
-    - imgs  # Все картинки
-    - scripts  # Весь JS код
-- templates  # Отвечает за HTML заготовки для генерации и последующей раздаче в frontend_manager
-    - modules
-- venv  # Виртуальное окружение Python
-- node_modules  # Виртуальное окружение node.js
-- main.py  # Основная входная точка приложения
-- package.json  # Описывает зависимости JS
-- poetry.lock  # Описывает зависимости Python
-- tailwind.config.js  # Описывает конфиг для Tailwind
+aerich upgrade  # Обновляемся
 ```
 
 # Используемые технологии
@@ -63,10 +37,3 @@ aerich upgrade  # Обновляемся до последней версии м
 1. node.js
 2. Tailwind - стили
 3. Jinja2 - Template движок
-
-
-# Логика работы приложения
-1. Пользователь выполняет запрос
-2. FastAPI подхватывает входящий запрос и направляет в один из путей
-3. Определенный route обрабатывает этот запрос и выдает ответ, например генерирует статику благодаря Jinja2 и отдает пользователю
-4. Дополнительно прописаны API routes, для невидимых запросов
